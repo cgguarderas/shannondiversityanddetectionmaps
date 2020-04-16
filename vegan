@@ -1,0 +1,59 @@
+library(vegan)
+
+library(readxl)
+spp_mindo1 <- read_excel("H:/TESIS CGG - BECKY ZUG/scripts/excel/spp_mindo1.xlsx")
+View(spp_mindo1)
+
+H <- diversity(spp_mindo1)
+H
+plot(H,
+     type = "h",main = "Shannon diversity index compared across sites"
+     )
+
+simp <- diversity(spp_mindo1, "simpson")
+simp
+
+invsimp <- diversity(spp_mindo1, "inv")
+invsimp
+
+J <- H/log(specnumber(spp_mindo1))
+specnumber(spp_mindo1)
+J
+
+H <- diversity(spp_mindo1)
+simp <- diversity(spp_mindo1, "simpson")
+invsimp <- diversity(spp_mindo1, "inv")
+H
+simp
+invsimp
+
+## Unbiased Simpson (Hurlbert 1971, eq. 5) with rarefy:
+unbias.simp <- rarefy(spp_mindo1, 12) - 1
+## Fisher alpha
+alpha <- fisher.alpha(spp_mindo1)
+alpha
+
+## Plot all
+pairs(cbind(H, simp, invsimp, alpha), pch="+", col="blue")
+## Species richness (S) and Pielou's evenness (J):
+S <- specnumber(spp_mindo1) ## rowSums(BCI > 0) does the same...
+S
+J <- H/log(S)
+J
+## beta diversity defined as gamma/alpha - 1:
+
+alpha <- with(spp_mindo1, tapply(specnumber(spp_mindo1), Management, mean))
+gamma <- with(spp_mindo1, specnumber(spp_mindo1, Management))
+gamma/alpha - 1
+
+sac <- specaccum(spp_mindo1) 
+plot(sac, ci.type="polygon", ci.col="white")
+plot(sac)
+
+diversity(specpool(spp_mindo1))
+diversity(specpool(spp_mindo1), index = "simpson")
+
+estimateR(spp_mindo1[,])
+veiledspec(prestondistr(spp_mindo1[,]))
+       
+mod <- decorana(spp_mindo1)    
